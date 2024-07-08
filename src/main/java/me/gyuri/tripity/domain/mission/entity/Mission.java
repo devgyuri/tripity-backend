@@ -1,12 +1,15 @@
 package me.gyuri.tripity.domain.mission.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Mission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
