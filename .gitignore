@@ -44,3 +44,4 @@ bin/
 
 ### My Setting ###
 application.yml
+**/domain/test
