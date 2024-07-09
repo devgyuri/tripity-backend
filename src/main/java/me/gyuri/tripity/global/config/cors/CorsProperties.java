@@ -1,4 +1,4 @@
-package me.gyuri.tripity.global.config;
+package me.gyuri.tripity.global.config.cors;
 
 import lombok.Getter;
 import lombok.Setter;
