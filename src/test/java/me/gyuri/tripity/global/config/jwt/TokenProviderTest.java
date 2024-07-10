@@ -30,7 +30,7 @@ public class TokenProviderTest {
     void generateToken() {
         // given
         User testUser = userRepository.save(User.builder()
-                .email("user@email.com")
+                .email("test@email.com")
                 .password("test")
                 .nickname("nickname")
                 .build());
