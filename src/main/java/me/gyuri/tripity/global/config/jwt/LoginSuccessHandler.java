@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.gyuri.tripity.domain.auth.dto.LoginResponse;
 import me.gyuri.tripity.domain.auth.entity.RefreshToken;
 import me.gyuri.tripity.domain.auth.repository.RefreshTokenRepository;
-import me.gyuri.tripity.domain.user.dto.Profile;
+import me.gyuri.tripity.domain.user.dto.UserInfo;
 import me.gyuri.tripity.domain.user.entity.User;
 import me.gyuri.tripity.domain.user.service.UserService;
 import me.gyuri.tripity.global.util.CookieUtil;
@@ -57,7 +57,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         LoginResponse loginResponse = LoginResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .profile(Profile.from(user))
+                .userInfo(UserInfo.from(user))
                 .build();
 
         String loginResponseJson = new ObjectMapper().writeValueAsString(loginResponse);

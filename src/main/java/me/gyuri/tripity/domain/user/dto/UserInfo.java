@@ -10,12 +10,12 @@ import me.gyuri.tripity.domain.user.entity.User;
 @NoArgsConstructor
 @Getter
 @Builder
-public class Profile {
+public class UserInfo {
     private Long id;
     private String nickname;
 
-    public static Profile from(User user) {
-        return Profile.builder()
+    public static UserInfo from(User user) {
+        return UserInfo.builder()
                 .id(user.getId())
                 .nickname(user.getNickname())
                 .build();
