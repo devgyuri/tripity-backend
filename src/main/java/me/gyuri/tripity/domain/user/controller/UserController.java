@@ -10,14 +10,16 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/user")
-    public Long signup(CreateUserRequest request) {
+    @PostMapping("/signup")
+    public Long signup(@RequestBody CreateUserRequest request) {
         return userService.save(request);
     }
 

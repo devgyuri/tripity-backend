@@ -1,10 +1,15 @@
 package me.gyuri.tripity.global.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import me.gyuri.tripity.domain.auth.repository.RefreshTokenRepository;
 import me.gyuri.tripity.domain.user.service.UserDetailService;
 import me.gyuri.tripity.domain.user.service.UserService;
 import me.gyuri.tripity.global.config.cors.CorsProperties;
+import me.gyuri.tripity.global.config.filter.CustomJsonUsernamePasswordAuthenticationFilter;
+import me.gyuri.tripity.global.config.filter.TokenAuthenticationFilter;
+import me.gyuri.tripity.global.config.jwt.LoginFailureHandler;
+import me.gyuri.tripity.global.config.jwt.LoginSuccessHandler;
 import me.gyuri.tripity.global.config.jwt.TokenProvider;
 import me.gyuri.tripity.global.config.oauth.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import me.gyuri.tripity.global.config.oauth.OAuth2SuccessHandler;
@@ -23,6 +28,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -38,6 +44,8 @@ public class SecurityConfig {
     private final CorsProperties corsProperties;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final UserDetailService userDetailService;
+    private final ObjectMapper objectMapper;
 
     @Bean
     public WebSecurityCustomizer configure() {
@@ -54,7 +62,8 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class)
+                .addFilterBefore(tokenAuthenticationFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests(auth -> auth
 //                        .requestMatchers(
 //                                new AntPathRequestMatcher("/login"),
@@ -76,6 +85,42 @@ public class SecurityConfig {
     }
 
     @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(bCryptPasswordEncoder());
+        provider.setUserDetailsService(userDetailService);
+        return new ProviderManager(provider);
+    }
+
+    @Bean
+    public LoginSuccessHandler loginSuccessHandler() {
+        return new LoginSuccessHandler(tokenProvider, refreshTokenRepository, userService);
+    }
+    @Bean
+    public LoginFailureHandler loginFailureHandler() {
+        return new LoginFailureHandler();
+    }
+
+    @Bean
+    public CustomJsonUsernamePasswordAuthenticationFilter customJsonUsernamePasswordAuthenticationFilter() {
+        CustomJsonUsernamePasswordAuthenticationFilter customJsonUsernamePasswordAuthenticationFilter = new CustomJsonUsernamePasswordAuthenticationFilter(objectMapper);
+        customJsonUsernamePasswordAuthenticationFilter.setAuthenticationManager(authenticationManager());
+        customJsonUsernamePasswordAuthenticationFilter.setAuthenticationSuccessHandler(loginSuccessHandler());
+        customJsonUsernamePasswordAuthenticationFilter.setAuthenticationFailureHandler(loginFailureHandler());
+        return customJsonUsernamePasswordAuthenticationFilter;
+    }
+
+    @Bean
+    public TokenAuthenticationFilter tokenAuthenticationFilter() {
+        return new TokenAuthenticationFilter(tokenProvider);
+    }
+
+    @Bean
     public OAuth2SuccessHandler oAuth2SuccessHandler() {
         return new OAuth2SuccessHandler(tokenProvider,
                 refreshTokenRepository,
@@ -85,18 +130,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public TokenAuthenticationFilter tokenAuthenticationFilter() {
-        return new TokenAuthenticationFilter(tokenProvider);
-    }
-
-    @Bean
     public OAuth2AuthorizationRequestBasedOnCookieRepository oAuth2AuthorizationRequestBasedOnCookieRepository() {
         return new OAuth2AuthorizationRequestBasedOnCookieRepository();
-    }
-
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
     // CORS
