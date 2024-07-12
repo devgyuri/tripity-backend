@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
-    private static final String NO_CHECK_URL = "/api/auth/login";
+    private static final String NO_CHECK_URL = "/login";
     private static final String NO_CHECK_URL2 = "/api/oauth/login";
     private static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";

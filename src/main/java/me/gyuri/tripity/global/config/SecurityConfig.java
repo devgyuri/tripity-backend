@@ -66,8 +66,8 @@ public class SecurityConfig {
                 .addFilterBefore(tokenAuthenticationFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests(auth -> auth
                         .requestMatchers(
-                                new AntPathRequestMatcher("/api/auth/login"),
-                                new AntPathRequestMatcher("/api/users/signup"),
+                                new AntPathRequestMatcher("/login"),
+                                new AntPathRequestMatcher("/api/auth/signup"),
                                 new AntPathRequestMatcher("/api/auth/token"),
                                 new AntPathRequestMatcher("/api/auth/logout")
 //                                new AntPathRequestMatcher("/api/user"),
@@ -79,7 +79,9 @@ public class SecurityConfig {
                 )
 //                .oauth2Login(oauth2 -> oauth2
 //                        .loginPage("/api/oauth/login")
-//                        .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint.authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository()))
+//                        .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint
+//                                .baseUri("/api/oauth2/authorization")
+//                                .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository()))
 //                        .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.userService(oAuth2UserCustomService))
 //                        .successHandler(oAuth2SuccessHandler()))
                 .build();

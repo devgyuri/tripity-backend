@@ -2,6 +2,7 @@ package me.gyuri.tripity.domain.auth.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.gyuri.tripity.domain.auth.dto.CreateAccessTokenRequest;
@@ -45,7 +46,9 @@ public class TokenController {
     }
 
     @DeleteMapping("/api/auth/logout")
-    public ResponseEntity<Void> deleteRefreshToken(HttpServletRequest request, HttpServletResponse response, @CookieValue("refresh_token") String refreshToken) {
+    public ResponseEntity<Void> deleteRefreshToken(HttpSession session, HttpServletRequest request, HttpServletResponse response, @CookieValue("refresh_token") String refreshToken) {
+        session.invalidate();
+
         refreshTokenService.delete(refreshToken);
         CookieUtil.deleteCookie(request, response, "refresh_token");
 
