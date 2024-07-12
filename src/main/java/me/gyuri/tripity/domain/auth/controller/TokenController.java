@@ -6,15 +6,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.gyuri.tripity.domain.auth.dto.CreateAccessTokenRequest;
 import me.gyuri.tripity.domain.auth.dto.CreateAccessTokenResponse;
+import me.gyuri.tripity.domain.auth.service.RefreshTokenService;
 import me.gyuri.tripity.domain.auth.service.TokenService;
 import me.gyuri.tripity.global.config.jwt.TokenProvider;
 import me.gyuri.tripity.global.util.CookieUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 
@@ -24,6 +22,7 @@ import java.time.Duration;
 public class TokenController {
     private final TokenService tokenService;
     private final TokenProvider tokenProvider;
+    private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/api/auth/token")
     public ResponseEntity<CreateAccessTokenResponse> createNewAccessToken(HttpServletRequest request, HttpServletResponse response, @CookieValue("refresh_token") String refreshToken) {
@@ -43,5 +42,14 @@ public class TokenController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new CreateAccessTokenResponse(newAccessToken));
+    }
+
+    @DeleteMapping("/api/auth/logout")
+    public ResponseEntity<Void> deleteRefreshToken(HttpServletRequest request, HttpServletResponse response, @CookieValue("refresh_token") String refreshToken) {
+        refreshTokenService.delete(refreshToken);
+        CookieUtil.deleteCookie(request, response, "refresh_token");
+
+        return ResponseEntity.ok()
+                .build();
     }
 }
