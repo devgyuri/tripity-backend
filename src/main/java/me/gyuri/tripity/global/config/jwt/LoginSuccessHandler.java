@@ -47,7 +47,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         // save access token to cookie
         String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION);
-        addAccessTokenToCookie(request, response, accessToken);
+//        addAccessTokenToCookie(request, response, accessToken);
 
         super.clearAuthenticationAttributes(request);
 
@@ -56,7 +56,6 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         LoginResponse loginResponse = LoginResponse.builder()
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
                 .userInfo(UserInfo.from(user))
                 .build();
 

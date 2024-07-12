@@ -10,6 +10,5 @@ import me.gyuri.tripity.domain.user.dto.UserInfo;
 @Builder
 public class LoginResponse {
     private String accessToken;
-    private String refreshToken;
     private UserInfo userInfo;
 }
