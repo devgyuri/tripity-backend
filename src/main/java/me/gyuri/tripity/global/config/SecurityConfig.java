@@ -76,11 +76,11 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
 //                        .anyRequest().permitAll()
                 )
-                .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/api/oauth/login")
-                        .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint.authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository()))
-                        .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.userService(oAuth2UserCustomService))
-                        .successHandler(oAuth2SuccessHandler()))
+//                .oauth2Login(oauth2 -> oauth2
+//                        .loginPage("/api/oauth/login")
+//                        .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint.authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository()))
+//                        .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.userService(oAuth2UserCustomService))
+//                        .successHandler(oAuth2SuccessHandler()))
                 .build();
     }
 
