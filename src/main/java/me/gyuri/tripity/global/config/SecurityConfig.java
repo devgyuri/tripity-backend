@@ -69,7 +69,8 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/login"),
                                 new AntPathRequestMatcher("/api/auth/signup"),
                                 new AntPathRequestMatcher("/api/auth/token"),
-                                new AntPathRequestMatcher("/api/auth/logout")
+                                new AntPathRequestMatcher("/api/auth/logout"),
+                                new AntPathRequestMatcher("/oauth2/**")
 //                                new AntPathRequestMatcher("/api/user"),
 //                                new AntPathRequestMatcher("/api/products"),
 //                                new AntPathRequestMatcher("/test")
@@ -77,13 +78,14 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
 //                        .anyRequest().permitAll()
                 )
-//                .oauth2Login(oauth2 -> oauth2
-//                        .loginPage("/api/oauth/login")
-//                        .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint
-//                                .baseUri("/api/oauth2/authorization")
-//                                .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository()))
-//                        .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.userService(oAuth2UserCustomService))
-//                        .successHandler(oAuth2SuccessHandler()))
+                .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint
+                                .baseUri("/oauth2/authorization")
+                                .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository()))
+                        .redirectionEndpoint(redirectionEndpoint -> redirectionEndpoint
+                                .baseUri("/oauth2/callback/*"))
+                        .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.userService(oAuth2UserCustomService))
+                        .successHandler(oAuth2SuccessHandler()))
                 .build();
     }
 
