@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.gyuri.tripity.domain.user.dto.ProviderType;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,11 +33,15 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private ProviderType providerType;
+
     @Builder
-    public User(String email, String nickname, String password, String auth) {
+    public User(String email, String nickname, String password, ProviderType providerType) {
         this.email = email;
         this.nickname = nickname;
         this.password = password;
+        this.providerType = providerType;
     }
 
     // 권한 반환

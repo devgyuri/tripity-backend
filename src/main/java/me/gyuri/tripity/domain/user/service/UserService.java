@@ -3,6 +3,7 @@ package me.gyuri.tripity.domain.user.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.gyuri.tripity.domain.user.dto.CreateUserRequest;
+import me.gyuri.tripity.domain.user.dto.ProviderType;
 import me.gyuri.tripity.domain.user.entity.User;
 import me.gyuri.tripity.domain.user.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,6 +27,7 @@ public class UserService {
                 .email(request.getEmail())
                 .nickname(request.getNickname())
                 .password(encoder.encode(request.getPassword()))
+                .providerType(ProviderType.LOCAL)
                 .build()).getId();
     }
 
