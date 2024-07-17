@@ -83,7 +83,7 @@ public class SecurityConfig {
                                 .baseUri("/oauth2/authorization")
                                 .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository()))
                         .redirectionEndpoint(redirectionEndpoint -> redirectionEndpoint
-                                .baseUri("/oauth2/callback/*"))
+                                .baseUri("/oauth2/callback/**"))
                         .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.userService(oAuth2UserCustomService))
                         .successHandler(oAuth2SuccessHandler()))
                 .build();

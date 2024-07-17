@@ -1,6 +1,7 @@
 package me.gyuri.tripity.global.config.oauth;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.gyuri.tripity.domain.user.dto.ProviderType;
 import me.gyuri.tripity.domain.user.entity.User;
 import me.gyuri.tripity.domain.user.repository.UserRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class OAuth2UserCustomService extends DefaultOAuth2UserService {
@@ -22,6 +24,7 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        log.info("+++++ OAuth service +++++");
         OAuth2User user = super.loadUser(userRequest);
         return process(userRequest, user);
     }
