@@ -44,26 +44,11 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
     }
 
     private User createUser(OAuth2UserInfo userInfo, ProviderType providerType) {
-        String nickname = userInfo.getName() + UUID.randomUUID();
+        String nickname = userInfo.getName() + UUID.randomUUID().toString().substring(0, 8);
         return userRepository.save(User.builder()
                 .nickname(nickname)
                 .email(userInfo.getEmail())
                 .providerType(providerType)
                 .build());
-    }
-
-    // 사용자 이름 unique하게
-    private User saveOrUpdate(OAuth2User oAuth2User) {
-        Map<String, Object> attributes = oAuth2User.getAttributes();
-        String email = (String) attributes.get("email");
-        String name = (String) attributes.get("name");
-//        User user = userRepository.findByEmail(userInfo.getEmail())
-        User user = userRepository.findByEmail(email)
-                .map(entity -> entity.update(name))
-                .orElse(User.builder()
-                        .email(email)
-                        .nickname(name + UUID.randomUUID().toString().replace("-", "").substring(0, 5))
-                        .build());
-        return userRepository.save(user);
     }
 }
