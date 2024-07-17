@@ -20,9 +20,13 @@ public class TokenService {
     private final RefreshTokenService refreshTokenService;
     private final UserService userService;
 
-    public String createNewAccessToken(String refreshToken) {
+    public User findUser(String refreshToken) {
         Long userId = refreshTokenService.findByRefreshToken(refreshToken).getUserId();
-        User user = userService.findById(userId);
+        return userService.findById(userId);
+    }
+
+    public String createNewAccessToken(String refreshToken) {
+        User user = findUser(refreshToken);
 
         return tokenProvider.generateToken(user, Duration.ofHours(1));
     }
@@ -30,8 +34,7 @@ public class TokenService {
     @Transactional
     public String createNewRefreshToken(String refreshToken) {
         RefreshToken oldRefreshToken = refreshTokenService.findByRefreshToken(refreshToken);
-        Long userId = oldRefreshToken.getUserId();
-        User user = userService.findById(userId);
+        User user = findUser(refreshToken);
         String newRefreshToken = tokenProvider.generateToken(user, Duration.ofDays(14));
         oldRefreshToken.update(newRefreshToken);
 
