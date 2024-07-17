@@ -6,7 +6,7 @@ import me.gyuri.tripity.domain.user.dto.UserInfo;
 
 @AllArgsConstructor
 @Getter
-public class CreateAccessTokenResponse {
+public class RestoreTokenResponse {
     private String accessToken;
     private UserInfo userInfo;
 }

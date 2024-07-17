@@ -4,7 +4,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import me.gyuri.tripity.domain.auth.dto.RestoreTokenResponse;
 import me.gyuri.tripity.domain.auth.entity.RefreshToken;
+import me.gyuri.tripity.domain.user.dto.UserInfo;
 import me.gyuri.tripity.domain.user.entity.User;
 import me.gyuri.tripity.domain.user.service.UserService;
 import me.gyuri.tripity.global.config.jwt.TokenProvider;
@@ -25,6 +27,13 @@ public class TokenService {
         return userService.findById(userId);
     }
 
+    public void validateRefreshToken(HttpServletRequest request, HttpServletResponse response, String refreshToken) throws IllegalArgumentException {
+        if (!tokenProvider.validToken(refreshToken)) {
+            CookieUtil.deleteCookie(request, response, "refresh_token");
+            throw new IllegalArgumentException("Invalid token");
+        }
+    }
+
     public String createNewAccessToken(String refreshToken) {
         User user = findUser(refreshToken);
 
@@ -39,5 +48,20 @@ public class TokenService {
         oldRefreshToken.update(newRefreshToken);
 
         return newRefreshToken;
+    }
+
+    public RestoreTokenResponse sendAccessTokenAndUserInfo(HttpServletRequest request, HttpServletResponse response, String refreshToken) {
+        User user = findUser(refreshToken);
+        UserInfo userInfo = UserInfo.from(user);
+
+        String newAccessToken = createNewAccessToken(refreshToken);
+
+        return new RestoreTokenResponse(newAccessToken, userInfo);
+    }
+
+    public void sendRefreshToken(HttpServletRequest request, HttpServletResponse response, String refreshToken) {
+        String newRefreshToken = createNewRefreshToken(refreshToken);
+        CookieUtil.deleteCookie(request, response, "refresh_token");
+        CookieUtil.addCookie(response, "refresh_token", newRefreshToken, (int) Duration.ofDays(14).toSeconds());
     }
 }

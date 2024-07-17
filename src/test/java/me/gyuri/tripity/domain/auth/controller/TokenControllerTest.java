@@ -1,7 +1,7 @@
 package me.gyuri.tripity.domain.auth.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import me.gyuri.tripity.domain.auth.dto.CreateAccessTokenRequest;
+import me.gyuri.tripity.domain.auth.dto.RestoreTokenRequest;
 import me.gyuri.tripity.domain.auth.entity.RefreshToken;
 import me.gyuri.tripity.domain.auth.repository.RefreshTokenRepository;
 import me.gyuri.tripity.domain.user.entity.User;
@@ -22,7 +22,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -68,7 +67,7 @@ class TokenControllerTest {
                 .createToken(jwtProperties);
         refreshTokenRepository.save(new RefreshToken(testUser.getId(), refreshToken));
 
-        CreateAccessTokenRequest request = new CreateAccessTokenRequest();
+        RestoreTokenRequest request = new RestoreTokenRequest();
         request.setRefreshToken(refreshToken);
         final String requestBody = objectMapper.writeValueAsString(request);
 
