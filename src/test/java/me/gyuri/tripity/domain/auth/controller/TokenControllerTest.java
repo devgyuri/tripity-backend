@@ -1,9 +1,10 @@
 package me.gyuri.tripity.domain.auth.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import me.gyuri.tripity.domain.auth.dto.RestoreTokenRequest;
+import jakarta.servlet.http.Cookie;
 import me.gyuri.tripity.domain.auth.entity.RefreshToken;
 import me.gyuri.tripity.domain.auth.repository.RefreshTokenRepository;
+import me.gyuri.tripity.domain.user.dto.ProviderType;
 import me.gyuri.tripity.domain.user.entity.User;
 import me.gyuri.tripity.domain.user.repository.UserRepository;
 import me.gyuri.tripity.global.config.jwt.JwtFactory;
@@ -22,6 +23,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Map;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -47,18 +49,20 @@ class TokenControllerTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .build();
         userRepository.deleteAll();
+        refreshTokenRepository.deleteAll();
     }
 
-    @DisplayName("createNewAccessToken: 새로운 액세스 토큰을 발급한다.")
+    @DisplayName("restoreAccessToken: 새로운 액세스 토큰과 유저 정보를 발급한다.")
     @Test
-    public void createNewAccessToken() throws Exception {
+    public void restoreToken() throws Exception {
         // given
-        final String url = "/api/token";
+        final String url = "/api/auth/token";
 
         User testUser = userRepository.save(User.builder()
                 .email("test@email.com")
                 .nickname("nickname")
                 .password("test")
+                .providerType(ProviderType.LOCAL)
                 .build());
 
         String refreshToken = JwtFactory.builder()
@@ -67,18 +71,18 @@ class TokenControllerTest {
                 .createToken(jwtProperties);
         refreshTokenRepository.save(new RefreshToken(testUser.getId(), refreshToken));
 
-        RestoreTokenRequest request = new RestoreTokenRequest();
-        request.setRefreshToken(refreshToken);
-        final String requestBody = objectMapper.writeValueAsString(request);
+        Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
 
         // when
         ResultActions resultActions = mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(requestBody));
+                .cookie(refreshCookie));
 
         // then
         resultActions
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.accessToken").isNotEmpty());
+                .andExpect(jsonPath("$.accessToken").isNotEmpty())
+                .andExpect(jsonPath("$.userInfo.id").value(testUser.getId()))
+                .andExpect(jsonPath("$.userInfo.nickname").value(testUser.getNickname()));
     }
 }
