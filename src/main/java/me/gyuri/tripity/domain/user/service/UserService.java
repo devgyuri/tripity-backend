@@ -1,11 +1,14 @@
 package me.gyuri.tripity.domain.user.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.gyuri.tripity.domain.user.dto.SignupRequest;
 import me.gyuri.tripity.domain.user.dto.ProviderType;
 import me.gyuri.tripity.domain.user.entity.User;
 import me.gyuri.tripity.domain.user.repository.UserRepository;
+import me.gyuri.tripity.global.exception.CustomException;
+import me.gyuri.tripity.global.exception.ErrorCode;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +18,19 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
 
+    @Transactional
     public Long save(SignupRequest request) {
         log.info("+++++ UserService +++++");
         log.info("request email: {}", request.getEmail());
         log.info("request nickname: {}", request.getNickname());
         log.info("request password: {}", request.getPassword());
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new CustomException(ErrorCode.DUPLICATED_EMAIL);
+        }
+        if (userRepository.existsByNickname(request.getNickname())) {
+            throw new CustomException(ErrorCode.DUPLICATED_NICKNAME);
+        }
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
