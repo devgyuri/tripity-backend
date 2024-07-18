@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import me.gyuri.tripity.domain.auth.dto.LoginResponse;
 import me.gyuri.tripity.domain.auth.entity.RefreshToken;
 import me.gyuri.tripity.domain.auth.repository.RefreshTokenRepository;
+import me.gyuri.tripity.domain.auth.service.RefreshTokenService;
+import me.gyuri.tripity.domain.auth.service.TokenService;
 import me.gyuri.tripity.domain.user.dto.UserInfo;
 import me.gyuri.tripity.domain.user.entity.User;
 import me.gyuri.tripity.domain.user.service.UserService;
@@ -24,40 +26,34 @@ import java.time.Duration;
 @Component
 @Slf4j
 public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    public static final String ACCESS_TOKEN_COOKIE_NAME = "access_token";
-    public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
-    public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14);
-    public static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(1);
-
-    private final TokenProvider tokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenService refreshTokenService;
+    private final TokenService tokenService;
     private final UserService userService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         log.info("+++++ LoginSuccessHandler +++++");
-        // 문제 발생할 수도? getUsername에 email이 잘 들어올 것인가?
+
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         User user = userService.findByEmail((String) userDetails.getUsername());
 
         // save refresh token to cookie
-        String refreshToken = tokenProvider.generateToken(user, REFRESH_TOKEN_DURATION);
-        saveRefreshToken(user.getId(), refreshToken);
-        addRefreshTokenToCookie(request, response, refreshToken);
+        String refreshToken = tokenService.createRefreshToken(user);
+        refreshTokenService.saveRefreshToken(user.getId(), refreshToken);
+        tokenService.sendRefreshToken(request, response, refreshToken);
 
-        // save access token to cookie
-        String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION);
-//        addAccessTokenToCookie(request, response, accessToken);
+        // save access token to response
+        String accessToken = tokenService.createAccessToken(user);
+        LoginResponse loginResponse = LoginResponse.builder()
+                .accessToken(accessToken)
+                .userInfo(UserInfo.from(user))
+                .build();
 
         super.clearAuthenticationAttributes(request);
 
         log.info("로그인에 성공하였습니다. 이메일: {}", user.getEmail());
         log.info("로그인에 성공하였습니다. AccessToken: {}", accessToken);
 
-        LoginResponse loginResponse = LoginResponse.builder()
-                .accessToken(accessToken)
-                .userInfo(UserInfo.from(user))
-                .build();
 
         String loginResponseJson = new ObjectMapper().writeValueAsString(loginResponse);
 
@@ -65,25 +61,5 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().write(loginResponseJson);
-    }
-
-    private void saveRefreshToken(Long userId, String newRefreshToken) {
-        RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId)
-                .map(entity -> entity.update(newRefreshToken))
-                .orElse(new RefreshToken(userId, newRefreshToken));
-
-        refreshTokenRepository.save(refreshToken);
-    }
-
-    private void addRefreshTokenToCookie(HttpServletRequest request, HttpServletResponse response, String refreshToken) {
-        int cookieMaxAge = (int) REFRESH_TOKEN_DURATION.toSeconds();
-        CookieUtil.deleteCookie(request, response, REFRESH_TOKEN_COOKIE_NAME);
-        CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refreshToken, cookieMaxAge);
-    }
-
-    private void addAccessTokenToCookie(HttpServletRequest request, HttpServletResponse response, String accessToken) {
-        int cookieMaxAge = (int) ACCESS_TOKEN_DURATION.toSeconds();
-        CookieUtil.deleteCookie(request, response, ACCESS_TOKEN_COOKIE_NAME);
-        CookieUtil.addCookie(response, ACCESS_TOKEN_COOKIE_NAME, accessToken, cookieMaxAge);
     }
 }

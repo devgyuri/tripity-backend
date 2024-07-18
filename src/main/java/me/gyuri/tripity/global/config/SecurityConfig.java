@@ -3,6 +3,8 @@ package me.gyuri.tripity.global.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import me.gyuri.tripity.domain.auth.repository.RefreshTokenRepository;
+import me.gyuri.tripity.domain.auth.service.RefreshTokenService;
+import me.gyuri.tripity.domain.auth.service.TokenService;
 import me.gyuri.tripity.domain.user.service.UserDetailService;
 import me.gyuri.tripity.domain.user.service.UserService;
 import me.gyuri.tripity.global.config.cors.CorsProperties;
@@ -16,6 +18,7 @@ import me.gyuri.tripity.global.config.oauth.OAuth2SuccessHandler;
 import me.gyuri.tripity.global.config.oauth.OAuth2UserCustomService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -27,6 +30,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -43,7 +47,9 @@ public class SecurityConfig {
     private final UserService userService;
     private final CorsProperties corsProperties;
     private final TokenProvider tokenProvider;
+    private final TokenService tokenService;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenService refreshTokenService;
     private final UserDetailService userDetailService;
     private final ObjectMapper objectMapper;
 
@@ -86,6 +92,11 @@ public class SecurityConfig {
                                 .baseUri("/oauth2/callback/**"))
                         .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.userService(oAuth2UserCustomService))
                         .successHandler(oAuth2SuccessHandler()))
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .defaultAuthenticationEntryPointFor(
+                                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
+                                new AntPathRequestMatcher("/api/**")
+                        ))
                 .build();
     }
 
@@ -104,7 +115,7 @@ public class SecurityConfig {
 
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(tokenProvider, refreshTokenRepository, userService);
+        return new LoginSuccessHandler(refreshTokenService, tokenService, userService);
     }
     @Bean
     public LoginFailureHandler loginFailureHandler() {
@@ -122,7 +133,7 @@ public class SecurityConfig {
 
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
-        return new TokenAuthenticationFilter(tokenProvider);
+        return new TokenAuthenticationFilter(tokenProvider, tokenService);
     }
 
     @Bean

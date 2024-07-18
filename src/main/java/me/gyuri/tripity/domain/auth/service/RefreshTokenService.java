@@ -20,6 +20,14 @@ public class RefreshTokenService {
                 .orElseThrow(() -> new IllegalArgumentException("Unexpected token"));
     }
 
+    public void saveRefreshToken(Long userId, String newRefreshToken) {
+        RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId)
+                .map(entity -> entity.update(newRefreshToken))
+                .orElse(new RefreshToken(userId, newRefreshToken));
+
+        refreshTokenRepository.save(refreshToken);
+    }
+
     @Transactional
     public void delete(String refreshToken) {
         Long userId = tokenProvider.getUserId(refreshToken);
