@@ -3,6 +3,7 @@ package me.gyuri.tripity.global.config.jwt;
 import io.jsonwebtoken.Jwts;
 import me.gyuri.tripity.domain.user.entity.User;
 import me.gyuri.tripity.domain.user.repository.UserRepository;
+import me.gyuri.tripity.global.exception.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,10 +59,10 @@ public class TokenProviderTest {
                 .createToken(jwtProperties);
 
         // when
-        boolean result = tokenProvider.validToken(token);
+        ErrorCode result = tokenProvider.validToken(token);
 
         // then
-        assertThat(result).isFalse();
+        assertThat(result).isEqualTo(ErrorCode.EXPIRED_JWT);
     }
 
     @DisplayName("validToken(): 유효한 토큰일 때 유효성 검증에 성공한다.")
@@ -71,10 +72,10 @@ public class TokenProviderTest {
         String token = JwtFactory.withDefaultValues().createToken(jwtProperties);
 
         // when
-        boolean result = tokenProvider.validToken(token);
+        ErrorCode result = tokenProvider.validToken(token);
 
         // then
-        assertThat(result).isTrue();
+        assertThat(result).isNull();
     }
 
     @DisplayName("getAuthentication(): 토큰 기반으로 인증 정보를 가져올 수 있다.")

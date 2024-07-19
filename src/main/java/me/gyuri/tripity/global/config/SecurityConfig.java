@@ -9,6 +9,7 @@ import me.gyuri.tripity.domain.user.service.UserDetailService;
 import me.gyuri.tripity.domain.user.service.UserService;
 import me.gyuri.tripity.global.config.cors.CorsProperties;
 import me.gyuri.tripity.global.config.filter.CustomJsonUsernamePasswordAuthenticationFilter;
+import me.gyuri.tripity.global.config.filter.TokenAuthenticationExceptionFilter;
 import me.gyuri.tripity.global.config.filter.TokenAuthenticationFilter;
 import me.gyuri.tripity.global.config.jwt.LoginFailureHandler;
 import me.gyuri.tripity.global.config.jwt.LoginSuccessHandler;
@@ -70,6 +71,7 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class)
                 .addFilterBefore(tokenAuthenticationFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(tokenAuthenticationExceptionFilter(), TokenAuthenticationFilter.class)
                 .authorizeRequests(auth -> auth
                         .requestMatchers(
                                 new AntPathRequestMatcher("/login"),
@@ -129,6 +131,11 @@ public class SecurityConfig {
         customJsonUsernamePasswordAuthenticationFilter.setAuthenticationSuccessHandler(loginSuccessHandler());
         customJsonUsernamePasswordAuthenticationFilter.setAuthenticationFailureHandler(loginFailureHandler());
         return customJsonUsernamePasswordAuthenticationFilter;
+    }
+
+    @Bean
+    public TokenAuthenticationExceptionFilter tokenAuthenticationExceptionFilter() {
+        return new TokenAuthenticationExceptionFilter();
     }
 
     @Bean

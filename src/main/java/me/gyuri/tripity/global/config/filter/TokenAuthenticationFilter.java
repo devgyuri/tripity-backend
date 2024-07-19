@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import me.gyuri.tripity.domain.auth.service.TokenService;
 import me.gyuri.tripity.global.config.jwt.TokenProvider;
+import me.gyuri.tripity.global.exception.ErrorCode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -29,9 +30,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = tokenService.extractAccessToken(request)
-                .filter(tokenProvider::validToken)
                 .orElse(null);
         if (token != null) {
+            tokenService.validateToken(request, response, token);
+
             Authentication authentication = tokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

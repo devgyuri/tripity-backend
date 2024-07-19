@@ -27,7 +27,7 @@ public class TokenController {
         log.info("+++++ token controller +++++");
         log.info("refresh token (cookie): {}", refreshToken);
 
-        tokenService.validateRefreshToken(request, response, refreshToken);
+        tokenService.validateToken(request, response, refreshToken);
 
         User user = tokenService.findUser(refreshToken);
 

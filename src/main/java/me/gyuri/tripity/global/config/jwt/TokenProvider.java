@@ -1,11 +1,9 @@
 package me.gyuri.tripity.global.config.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import me.gyuri.tripity.domain.user.entity.User;
+import me.gyuri.tripity.global.exception.ErrorCode;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,14 +38,16 @@ public class TokenProvider {
                 .compact();
     }
 
-    public boolean validToken(String token) {
+    public ErrorCode validToken(String token) {
         try {
             Jwts.parser()
                     .setSigningKey(jwtProperties.getSecretKey())
                     .parseClaimsJws(token);
-            return true;
+            return null;
+        } catch (ExpiredJwtException e) {
+            return ErrorCode.EXPIRED_JWT;
         } catch (Exception e) {
-            return false;
+            return ErrorCode.INVALID_JWT;
         }
     }
 

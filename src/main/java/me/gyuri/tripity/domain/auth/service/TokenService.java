@@ -37,10 +37,11 @@ public class TokenService {
         return userService.findById(userId);
     }
 
-    public void validateRefreshToken(HttpServletRequest request, HttpServletResponse response, String refreshToken) {
-        if (!tokenProvider.validToken(refreshToken)) {
+    public void validateToken(HttpServletRequest request, HttpServletResponse response, String token) {
+        ErrorCode e = tokenProvider.validToken(token);
+        if (e != null) {
             CookieUtil.deleteCookie(request, response, REFRESH_TOKEN_COOKIE_NAME);
-            throw new CustomException(ErrorCode.INVALID_JWT);
+            throw new CustomException(e);
         }
     }
 
