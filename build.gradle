@@ -23,7 +23,7 @@ dependencies {
 
     // devtools
     compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lmbok'
+    annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     // db
