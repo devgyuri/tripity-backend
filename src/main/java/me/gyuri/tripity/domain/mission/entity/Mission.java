@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
+@Table(name = "mission")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

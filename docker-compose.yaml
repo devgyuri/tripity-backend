@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  tripityDB:
+    container_name: tripityDB
+    image: mysql:8.0
+    restart: always
+    volumes:
+      - mysql_volume:/app/mysql
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    networks:
+      - tripity-net
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  tripityServer:
+    container_name: tripityServer
+    ports:
+      - "8080:8080"
+    image: gyuri772/tripity_backend_server:1.0
+    volumes:
+      - tripity_images:/app/tripity/images
+    networks:
+      - tripity-net
+    depends_on:
+      tripityDB:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://tripityDB:3306/${MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
+
+networks:
+  tripity-net:
+    driver: bridge
+volumes:
+  mysql_volume:
+    driver: local
+  tripity_images:
+    driver: local
