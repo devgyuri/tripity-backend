@@ -7,8 +7,8 @@ import me.gyuri.tripity.domain.auth.repository.RefreshTokenRepository;
 import me.gyuri.tripity.domain.user.dto.ProviderType;
 import me.gyuri.tripity.domain.user.entity.User;
 import me.gyuri.tripity.domain.user.repository.UserRepository;
-import me.gyuri.tripity.global.config.jwt.JwtFactory;
-import me.gyuri.tripity.global.config.jwt.JwtProperties;
+import me.gyuri.tripity.global.jwt.JwtFactory;
+import me.gyuri.tripity.global.jwt.JwtProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Map;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

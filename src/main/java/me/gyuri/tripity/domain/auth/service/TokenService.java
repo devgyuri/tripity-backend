@@ -10,7 +10,7 @@ import me.gyuri.tripity.domain.auth.entity.RefreshToken;
 import me.gyuri.tripity.domain.user.dto.UserInfo;
 import me.gyuri.tripity.domain.user.entity.User;
 import me.gyuri.tripity.domain.user.service.UserService;
-import me.gyuri.tripity.global.config.jwt.TokenProvider;
+import me.gyuri.tripity.global.jwt.TokenProvider;
 import me.gyuri.tripity.global.exception.CustomException;
 import me.gyuri.tripity.global.exception.ErrorCode;
 import me.gyuri.tripity.global.util.CookieUtil;
@@ -95,5 +95,9 @@ public class TokenService {
             }
         }
         return Optional.ofNullable(refreshToken);
+    }
+
+    public void deleteRefreshToken(String refreshToken) {
+        refreshTokenService.delete(refreshToken);
     }
 }

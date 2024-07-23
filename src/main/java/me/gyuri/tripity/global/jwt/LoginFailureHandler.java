@@ -1,4 +1,4 @@
-package me.gyuri.tripity.global.config.jwt;
+package me.gyuri.tripity.global.jwt;
 
 
 import jakarta.servlet.ServletException;

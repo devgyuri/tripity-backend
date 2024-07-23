@@ -11,19 +11,18 @@ import me.gyuri.tripity.global.config.cors.CorsProperties;
 import me.gyuri.tripity.global.config.filter.CustomJsonUsernamePasswordAuthenticationFilter;
 import me.gyuri.tripity.global.config.filter.TokenAuthenticationExceptionFilter;
 import me.gyuri.tripity.global.config.filter.TokenAuthenticationFilter;
-import me.gyuri.tripity.global.config.jwt.LoginFailureHandler;
-import me.gyuri.tripity.global.config.jwt.LoginSuccessHandler;
-import me.gyuri.tripity.global.config.jwt.TokenProvider;
-import me.gyuri.tripity.global.config.oauth.OAuth2AuthorizationRequestBasedOnCookieRepository;
-import me.gyuri.tripity.global.config.oauth.OAuth2SuccessHandler;
-import me.gyuri.tripity.global.config.oauth.OAuth2UserCustomService;
+import me.gyuri.tripity.global.jwt.LoginFailureHandler;
+import me.gyuri.tripity.global.jwt.LoginSuccessHandler;
+import me.gyuri.tripity.global.jwt.TokenProvider;
+import me.gyuri.tripity.global.oauth.OAuth2AuthorizationRequestBasedOnCookieRepository;
+import me.gyuri.tripity.global.oauth.OAuth2SuccessHandler;
+import me.gyuri.tripity.global.oauth.OAuth2UserCustomService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -32,7 +31,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -75,10 +73,11 @@ public class SecurityConfig {
                 .authorizeRequests(auth -> auth
                         .requestMatchers(
                                 new AntPathRequestMatcher("/login"),
-                                new AntPathRequestMatcher("/api/auth/signup"),
-                                new AntPathRequestMatcher("/api/auth/token"),
+                                new AntPathRequestMatcher("/api/auth/**"),
                                 new AntPathRequestMatcher("/logout"),
-                                new AntPathRequestMatcher("/oauth2/**")
+                                new AntPathRequestMatcher("/oauth2/**"),
+                                new AntPathRequestMatcher("/api/auth/verify/send"),
+                                new AntPathRequestMatcher("/api/auth/signup")
 //                                new AntPathRequestMatcher("/api/user"),
 //                                new AntPathRequestMatcher("/api/products"),
 //                                new AntPathRequestMatcher("/test")

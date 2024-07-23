@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Table(name = "refresh_token")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity

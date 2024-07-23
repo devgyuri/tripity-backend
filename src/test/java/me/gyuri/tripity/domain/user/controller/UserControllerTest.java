@@ -1,7 +1,7 @@
 package me.gyuri.tripity.domain.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import me.gyuri.tripity.domain.user.dto.SignupRequest;
+import me.gyuri.tripity.domain.auth.dto.SignupRequest;
 import me.gyuri.tripity.domain.user.entity.User;
 import me.gyuri.tripity.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;

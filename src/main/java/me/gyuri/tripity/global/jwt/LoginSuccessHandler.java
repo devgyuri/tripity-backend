@@ -1,4 +1,4 @@
-package me.gyuri.tripity.global.config.jwt;
+package me.gyuri.tripity.global.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;

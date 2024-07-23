@@ -26,6 +26,7 @@ public class TokenAuthenticationExceptionFilter extends OncePerRequestFilter {
                 CustomException customException = (CustomException) e;
                 handleAuthenticationException(response, customException.getErrorCode());
             } else {
+                e.printStackTrace();
                 handleAuthenticationException(response, ErrorCode.INTERNAL_SERVER_ERROR);
             }
         }

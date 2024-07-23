@@ -21,10 +21,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
+    // thymeleaf
+    implementation 'org.thymeleaf:thymeleaf:3.0.15.RELEASE'
+
     // devtools
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lmbok'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     // db
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -42,6 +46,13 @@ dependencies {
 
     // oauth2
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'io.lettuce:lettuce-core:6.2.1.RELEASE'
 }
 
 test {

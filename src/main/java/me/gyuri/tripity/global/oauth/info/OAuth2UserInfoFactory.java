@@ -1,4 +1,4 @@
-package me.gyuri.tripity.global.config.oauth.info;
+package me.gyuri.tripity.global.oauth.info;
 
 import me.gyuri.tripity.domain.user.dto.ProviderType;
 

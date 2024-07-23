@@ -1,19 +1,18 @@
-package me.gyuri.tripity.global.config.oauth;
+package me.gyuri.tripity.global.oauth;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.gyuri.tripity.domain.user.dto.ProviderType;
 import me.gyuri.tripity.domain.user.entity.User;
 import me.gyuri.tripity.domain.user.repository.UserRepository;
-import me.gyuri.tripity.global.config.oauth.info.OAuth2UserInfo;
-import me.gyuri.tripity.global.config.oauth.info.OAuth2UserInfoFactory;
+import me.gyuri.tripity.global.oauth.info.OAuth2UserInfo;
+import me.gyuri.tripity.global.oauth.info.OAuth2UserInfoFactory;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.UUID;
 
 @Slf4j

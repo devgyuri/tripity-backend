@@ -1,4 +1,4 @@
-package me.gyuri.tripity.global.config.oauth;
+package me.gyuri.tripity.global.oauth;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,7 +8,7 @@ import me.gyuri.tripity.domain.auth.entity.RefreshToken;
 import me.gyuri.tripity.domain.auth.repository.RefreshTokenRepository;
 import me.gyuri.tripity.domain.user.entity.User;
 import me.gyuri.tripity.domain.user.service.UserService;
-import me.gyuri.tripity.global.config.jwt.TokenProvider;
+import me.gyuri.tripity.global.jwt.TokenProvider;
 import me.gyuri.tripity.global.util.CookieUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;

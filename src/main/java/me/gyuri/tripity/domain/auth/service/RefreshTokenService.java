@@ -4,9 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import me.gyuri.tripity.domain.auth.entity.RefreshToken;
 import me.gyuri.tripity.domain.auth.repository.RefreshTokenRepository;
-import me.gyuri.tripity.domain.user.entity.User;
-import me.gyuri.tripity.global.config.jwt.TokenProvider;
-import org.springframework.security.core.context.SecurityContextHolder;
+import me.gyuri.tripity.global.jwt.TokenProvider;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor

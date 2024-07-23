@@ -1,4 +1,4 @@
-package me.gyuri.tripity.global.config.oauth;
+package me.gyuri.tripity.global.oauth;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
