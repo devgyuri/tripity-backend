@@ -16,14 +16,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
     private final UserService userService;
-
-//    @PostMapping("/api/auth/signup")
-//    public Long signup(@RequestBody SignupRequest request) {
-//        return userService.save(request);
-//    }
-//
-//    @GetMapping("/logout")
-//    public void logout(HttpServletRequest request, HttpServletResponse response) {
-//        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
-//    }
 }

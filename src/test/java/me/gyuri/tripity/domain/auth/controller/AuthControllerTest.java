@@ -1,4 +1,4 @@
-package me.gyuri.tripity.domain.user.controller;
+package me.gyuri.tripity.domain.auth.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.gyuri.tripity.domain.auth.dto.SignupRequest;
@@ -18,13 +18,13 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class UserControllerTest {
+class AuthControllerTest {
     @Autowired
     protected MockMvc mockMvc;
     @Autowired
@@ -39,5 +39,31 @@ class UserControllerTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .build();
         userRepository.deleteAll();
+    }
+
+    @DisplayName("signUp: 회원정보 등록에 성공한다.")
+    @Test
+    public void signup() throws Exception {
+        // given
+        final String url = "/api/auth/signup";
+
+        final String email = "test@email.com";
+        final String nickname = "nickname";
+        final String password = "test";
+        final SignupRequest request = new SignupRequest(email, nickname, password, password);
+
+        final String requestBody = objectMapper.writeValueAsString(request);
+
+        // when
+        ResultActions result = mockMvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(requestBody));
+
+        // then
+        List<User> users = userRepository.findAll();
+
+        assertThat(users.size()).isEqualTo(1);
+        assertThat(users.get(0).getEmail()).isEqualTo(email);
+        assertThat(users.get(0).getNickname()).isEqualTo(nickname);
     }
 }
