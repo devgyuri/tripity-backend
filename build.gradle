@@ -53,6 +53,10 @@ dependencies {
     // redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'io.lettuce:lettuce-core:6.2.1.RELEASE'
+
+    // cloud
+    implementation 'org.springframework.cloud:spring-cloud-gcp-starter:1.2.5.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-gcp-storage:1.2.5.RELEASE'
 }
 
 test {
