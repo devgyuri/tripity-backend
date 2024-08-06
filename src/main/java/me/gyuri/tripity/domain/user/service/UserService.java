@@ -7,23 +7,18 @@ import com.google.cloud.storage.StorageOptions;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.gyuri.tripity.domain.auth.dto.SignupRequest;
-import me.gyuri.tripity.domain.user.dto.ImageUploadRequest;
-import me.gyuri.tripity.domain.user.dto.ProviderType;
 import me.gyuri.tripity.domain.user.dto.UpdateUserRequest;
 import me.gyuri.tripity.domain.user.entity.User;
 import me.gyuri.tripity.domain.user.repository.UserRepository;
 import me.gyuri.tripity.global.exception.CustomException;
 import me.gyuri.tripity.global.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -45,9 +40,9 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("Unexpected user"));
     }
 
-    public String uploadImage(ImageUploadRequest request) throws IOException {
+    public String uploadImage(MultipartFile file) throws IOException {
         String uuid = UUID.randomUUID().toString();
-        String ext = request.getImage().getContentType();
+        String ext = file.getContentType();
 
         String keyFileName = "steel-cursor-431612-a9-9582f54560ca.json";
         InputStream keyFile = ResourceUtils.getURL("classpath:" + keyFileName).openStream();
@@ -61,7 +56,7 @@ public class UserService {
                 BlobInfo.newBuilder(bucketName, uuid)
                         .setContentType(ext)
                         .build(),
-                request.getImage().getInputStream()
+                file.getInputStream()
         );
 
         return uuid;
@@ -74,7 +69,9 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
-        user.update(request.getNickname(), request.getIntro(), request.getImage());
+        String imageUrl = uploadImage(request.getImage());
+
+        user.update(request.getNickname(), request.getIntro(), imageUrl);
         return user;
     }
 }

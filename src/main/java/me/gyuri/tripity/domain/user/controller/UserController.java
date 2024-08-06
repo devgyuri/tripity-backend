@@ -1,10 +1,7 @@
 package me.gyuri.tripity.domain.user.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.gyuri.tripity.domain.user.dto.ImageUploadRequest;
 import me.gyuri.tripity.domain.user.dto.UpdateUserRequest;
 import me.gyuri.tripity.domain.user.dto.UserInfo;
 import me.gyuri.tripity.domain.user.entity.User;
@@ -31,13 +28,5 @@ public class UserController {
 
         return ResponseEntity.ok()
                 .body(UserInfo.from(updatedUser));
-    }
-
-    @PutMapping("/api/users/image")
-    public ResponseEntity<String> uploadImage(ImageUploadRequest request) throws IOException {
-        String url = userService.uploadImage(request);
-
-        return ResponseEntity.ok()
-                .body(url);
     }
 }
