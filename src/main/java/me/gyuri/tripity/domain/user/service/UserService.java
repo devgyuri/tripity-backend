@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.gyuri.tripity.domain.auth.dto.SignupRequest;
 import me.gyuri.tripity.domain.user.dto.ImageUploadRequest;
 import me.gyuri.tripity.domain.user.dto.ProviderType;
+import me.gyuri.tripity.domain.user.dto.UpdateUserRequest;
 import me.gyuri.tripity.domain.user.entity.User;
 import me.gyuri.tripity.domain.user.repository.UserRepository;
 import me.gyuri.tripity.global.exception.CustomException;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,9 +46,6 @@ public class UserService {
     }
 
     public String uploadImage(ImageUploadRequest request) throws IOException {
-        User user = userRepository.findById(1L)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
-
         String uuid = UUID.randomUUID().toString();
         String ext = request.getImage().getContentType();
 
@@ -66,5 +65,16 @@ public class UserService {
         );
 
         return uuid;
+    }
+
+    @Transactional
+    public User updateUser(UpdateUserRequest request, String email) throws IOException {
+        // nickname 중복 체크
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+        user.update(request.getNickname(), request.getIntro(), request.getImage());
+        return user;
     }
 }

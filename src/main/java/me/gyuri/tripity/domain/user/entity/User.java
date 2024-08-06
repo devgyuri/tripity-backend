@@ -36,6 +36,9 @@ public class User implements UserDetails {
     @Column(name = "image")
     private String image;
 
+    @Column(name = "intro")
+    private String intro;
+
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
 
@@ -89,8 +92,10 @@ public class User implements UserDetails {
         return true;
     }
 
-    public User update(String nickname) {
+    public User update(String nickname, String intro, String image) {
         this.nickname = nickname;
+        this.intro = intro;
+        this.image = image;
 
         return this;
     }
