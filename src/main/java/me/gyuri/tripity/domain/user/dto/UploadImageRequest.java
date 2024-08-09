@@ -10,8 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateUserRequest {
-    private String nickname;
-    private String intro;
-    private String image;
+public class UploadImageRequest {
+    private MultipartFile image;
 }

@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.gyuri.tripity.domain.user.dto.UpdateUserRequest;
+import me.gyuri.tripity.domain.user.dto.UploadImageRequest;
 import me.gyuri.tripity.domain.user.entity.User;
 import me.gyuri.tripity.domain.user.repository.UserRepository;
 import me.gyuri.tripity.global.exception.CustomException;
@@ -40,9 +41,9 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("Unexpected user"));
     }
 
-    public String uploadImage(MultipartFile file) throws IOException {
+    public String uploadImage(UploadImageRequest request) throws IOException {
         String uuid = UUID.randomUUID().toString();
-        String ext = file.getContentType();
+        String ext = request.getImage().getContentType();
 
         String keyFileName = "steel-cursor-431612-a9-9582f54560ca.json";
         InputStream keyFile = ResourceUtils.getURL("classpath:" + keyFileName).openStream();
@@ -56,7 +57,7 @@ public class UserService {
                 BlobInfo.newBuilder(bucketName, uuid)
                         .setContentType(ext)
                         .build(),
-                file.getInputStream()
+                request.getImage().getInputStream()
         );
 
         return uuid;
@@ -64,14 +65,20 @@ public class UserService {
 
     @Transactional
     public User updateUser(UpdateUserRequest request, String email) throws IOException {
-        // nickname 중복 체크
-
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
-        String imageUrl = uploadImage(request.getImage());
+        if (!user.getNickname().equals(request.getNickname())) {
+            if (isDuplicatedNickname(request.getNickname())) {
+                throw new CustomException(ErrorCode.DUPLICATED_NICKNAME);
+            }
+        }
 
-        user.update(request.getNickname(), request.getIntro(), imageUrl);
+        user.update(request.getNickname(), request.getIntro(), request.getImage());
         return user;
+    }
+
+    public boolean isDuplicatedNickname(String nickname) {
+        return !userRepository.existsByNickname(nickname);
     }
 }
