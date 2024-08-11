@@ -20,7 +20,7 @@ public class UserController {
     private final UserService userService;
 
     @PutMapping("/api/users/profile")
-    public ResponseEntity<UserInfo> updateProfile(UpdateUserRequest request, Principal principal) throws IOException {
+    public ResponseEntity<UserInfo> updateProfile(@RequestBody UpdateUserRequest request, Principal principal) throws IOException {
         User updatedUser = userService.updateUser(request, principal.getName());
 
         return ResponseEntity.ok()

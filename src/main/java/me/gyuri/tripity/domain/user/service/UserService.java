@@ -65,13 +65,15 @@ public class UserService {
 
     @Transactional
     public User updateUser(UpdateUserRequest request, String email) throws IOException {
+        log.info("+++++ update user +++++");
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
-        if (!user.getNickname().equals(request.getNickname())) {
-            if (isDuplicatedNickname(request.getNickname())) {
-                throw new CustomException(ErrorCode.DUPLICATED_NICKNAME);
-            }
+        log.info(user.getNickname());
+        log.info(request.getNickname());
+        if (!user.getNickname().equals(request.getNickname()) && isDuplicatedNickname(request.getNickname())) {
+            throw new CustomException(ErrorCode.DUPLICATED_NICKNAME);
         }
 
         user.update(request.getNickname(), request.getIntro(), request.getImage());
@@ -79,6 +81,6 @@ public class UserService {
     }
 
     public boolean isDuplicatedNickname(String nickname) {
-        return !userRepository.existsByNickname(nickname);
+        return userRepository.existsByNickname(nickname);
     }
 }
