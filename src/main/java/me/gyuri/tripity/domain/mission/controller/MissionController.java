@@ -17,7 +17,7 @@ import java.util.List;
 public class MissionController {
     private final MissionService missionService;
 
-    @GetMapping("/missions")
+    @GetMapping("/api/missions")
     public ResponseEntity<List<MissionResponse>> fetchMissions() {
         List<MissionResponse> missions = missionService.findAll()
                 .stream()
@@ -28,7 +28,7 @@ public class MissionController {
                 .body(missions);
     }
 
-    @GetMapping("/missions/{id}")
+    @GetMapping("/api/missions/{id}")
     public ResponseEntity<MissionResponse> fetchMission(@PathVariable(value = "id") long id) {
         Mission mission = missionService.findById(id);
 
@@ -36,7 +36,7 @@ public class MissionController {
                 .body(new MissionResponse(mission));
     }
 
-    @PostMapping("/missions")
+    @PostMapping("/api/missions")
     public ResponseEntity<Mission> createMission(@RequestBody CreateMissionRequest request) {
         Mission savedMission = missionService.save(request);
 
@@ -45,7 +45,7 @@ public class MissionController {
     }
 
 
-    @DeleteMapping("/missions/{id}")
+    @DeleteMapping("/api/missions/{id}")
     public ResponseEntity<Void> deleteMission(@PathVariable(value = "id") long id) {
         missionService.delete(id);
 
@@ -53,7 +53,7 @@ public class MissionController {
                 .build();
     }
 
-    @PutMapping("/missions/{id}")
+    @PutMapping("/api/missions/{id}")
     public ResponseEntity<Mission> updateMission(@PathVariable(value = "id") long id, @RequestBody UpdateMissionRequest request) {
         Mission updatedMission = missionService.update(id, request);
 
