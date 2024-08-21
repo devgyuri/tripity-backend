@@ -1,6 +1,7 @@
 package me.gyuri.tripity.domain.place.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,6 +23,7 @@ public class Place {
     private String name;
 
     @Column(name = "description")
+    @Size(max = 1000)
     private String description;
 
     @Column(name = "address")
