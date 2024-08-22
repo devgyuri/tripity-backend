@@ -1,4 +1,4 @@
-package me.gyuri.tripity.domain.mission.dto;
+package me.gyuri.tripity.domain.article.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class UpdateMissionRequest {
+public class UpdateArticleRequest {
     private String title;
-    private String name;
     private String content;
 }

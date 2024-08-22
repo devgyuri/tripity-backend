@@ -1,17 +1,20 @@
-package me.gyuri.tripity.domain.mission.entity;
+package me.gyuri.tripity.domain.article.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
+import me.gyuri.tripity.domain.comment.entity.Comment;
 
-@Table(name = "mission")
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Table(name = "article")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Mission {
+public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
@@ -20,22 +23,23 @@ public class Mission {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "name", nullable = false)
-    private String name;
-
     @Column(name = "content")
     private String content;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "mission", cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
+
     @Builder
-    public Mission(String title, String name, String content) {
+    public Article(String title, String content) {
         this.title = title;
-        this.name = name;
         this.content = content;
     }
 
-    public void update(String title, String name, String content) {
+    public void update(String title, String content) {
         this.title = title;
-        this.name = name;
         this.content = content;
     }
 }

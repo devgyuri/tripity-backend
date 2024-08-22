@@ -1,22 +1,20 @@
-package me.gyuri.tripity.domain.mission.dto;
+package me.gyuri.tripity.domain.article.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import me.gyuri.tripity.domain.mission.entity.Mission;
+import me.gyuri.tripity.domain.article.entity.Article;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class CreateMissionRequest {
+public class AddArticleRequest {
     private String title;
-    private String name;
     private String content;
 
-    public Mission toEntity() {
-        return Mission.builder()
+    public Article toEntity() {
+        return Article.builder()
                 .title(title)
-                .name(name)
                 .content(content)
                 .build();
     }
