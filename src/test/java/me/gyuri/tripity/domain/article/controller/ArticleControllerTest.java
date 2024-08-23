@@ -162,12 +162,12 @@ class ArticleControllerTest {
         UpdateArticleRequest request = new UpdateArticleRequest(newTitle, newContent);
 
         // when
-        final ResultActions resultActions = mockMvc.perform(put(url, savedArticle.getId())
+        final ResultActions result= mockMvc.perform(put(url, savedArticle.getId())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(request)));
 
         // then
-        resultActions.andExpect(status().isOk());
+        result.andExpect(status().isOk());
 
         Article article = articleRepository.findById(savedArticle.getId()).get();
 

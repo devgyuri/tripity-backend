@@ -2,7 +2,7 @@ package me.gyuri.tripity.domain.article.controller;
 
 import lombok.RequiredArgsConstructor;
 import me.gyuri.tripity.domain.article.dto.AddArticleRequest;
-import me.gyuri.tripity.domain.article.dto.ArticleResponse;
+import me.gyuri.tripity.domain.article.dto.ArticleViewResponse;
 import me.gyuri.tripity.domain.article.dto.UpdateArticleRequest;
 import me.gyuri.tripity.domain.article.entity.Article;
 import me.gyuri.tripity.domain.article.service.ArticleService;
@@ -18,10 +18,10 @@ public class ArticleController {
     private final ArticleService articleService;
 
     @GetMapping("/api/articles")
-    public ResponseEntity<List<ArticleResponse>> findAllArticles() {
-        List<ArticleResponse> articles = articleService.findAll()
+    public ResponseEntity<List<ArticleViewResponse>> findAllArticles() {
+        List<ArticleViewResponse> articles = articleService.findAll()
                 .stream()
-                .map(ArticleResponse::new)
+                .map(ArticleViewResponse::new)
                 .toList();
 
         return ResponseEntity.ok()
@@ -29,11 +29,11 @@ public class ArticleController {
     }
 
     @GetMapping("/api/articles/{id}")
-    public ResponseEntity<ArticleResponse> findArticle(@PathVariable(value = "id") long id) {
+    public ResponseEntity<ArticleViewResponse> findArticle(@PathVariable(value = "id") long id) {
         Article article = articleService.findById(id);
 
         return ResponseEntity.ok()
-                .body(new ArticleResponse(article));
+                .body(new ArticleViewResponse(article));
     }
 
     @PostMapping("/api/articles")
