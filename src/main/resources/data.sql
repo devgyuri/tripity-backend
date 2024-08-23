@@ -3,6 +3,11 @@ INSERT INTO article (title, content, created_at, updated_at) VALUES ("제목1", 
 INSERT INTO article (title, content, created_at, updated_at) VALUES ("제목2", "내용2", NOW(), NOW());
 INSERT INTO article (title, content, created_at, updated_at) VALUES ("제목3", "내용3", NOW(), NOW());
 
+-- comment
+INSERT INTO comments (article_id, content, created_at) VALUES (1, "댓글1", NOW());
+INSERT INTO comments (article_id, content, created_at) VALUES (1, "댓글2", NOW();
+
+
 
 -- region
 INSERT INTO region (name, code) VALUES ('서울', 1);
