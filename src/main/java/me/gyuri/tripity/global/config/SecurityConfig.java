@@ -78,7 +78,7 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/oauth2/**"),
                                 new AntPathRequestMatcher("/api/auth/verify/send"),
                                 new AntPathRequestMatcher("/api/auth/signup"),
-                                new AntPathRequestMatcher("/api/missions/**"),
+                                new AntPathRequestMatcher("/api/articles/**", "GET"),
                                 new AntPathRequestMatcher("/api/places/**"),
                                 new AntPathRequestMatcher("/api/users/nickname/**")
 //                                new AntPathRequestMatcher("/api/user"),
