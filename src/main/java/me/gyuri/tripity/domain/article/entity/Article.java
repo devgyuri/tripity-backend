@@ -39,8 +39,8 @@ public class Article {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-//    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
-//    private List<Comment> comments;
+    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
 
     @Builder
     public Article(String title, String content) {
