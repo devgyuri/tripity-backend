@@ -5,7 +5,7 @@ INSERT INTO article (title, content, created_at, updated_at) VALUES ("제목3", 
 
 -- comment
 INSERT INTO comments (article_id, content, created_at) VALUES (1, "댓글1", NOW());
-INSERT INTO comments (article_id, content, created_at) VALUES (1, "댓글2", NOW();
+INSERT INTO comments (article_id, content, created_at) VALUES (1, "댓글2", NOW());
 
 
 
