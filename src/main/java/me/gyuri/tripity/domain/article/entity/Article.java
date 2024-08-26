@@ -31,6 +31,9 @@ public class Article {
     @Column(name = "content")
     private String content;
 
+    @Column(name = "author")
+    private String author;
+
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -43,7 +46,8 @@ public class Article {
     private List<Comment> comments;
 
     @Builder
-    public Article(String title, String content) {
+    public Article(String author, String title, String content) {
+        this.author = author;
         this.title = title;
         this.content = content;
     }

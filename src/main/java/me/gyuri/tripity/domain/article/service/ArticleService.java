@@ -24,8 +24,8 @@ public class ArticleService {
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
     }
 
-    public Article save(AddArticleRequest request) {
-        return articleRepository.save(request.toEntity());
+    public Article save(AddArticleRequest request, String email) {
+        return articleRepository.save(request.toEntity(email));
     }
 
     public void delete(long id) {
