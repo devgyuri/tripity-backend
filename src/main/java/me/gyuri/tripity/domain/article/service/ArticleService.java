@@ -6,6 +6,8 @@ import me.gyuri.tripity.domain.article.dto.AddArticleRequest;
 import me.gyuri.tripity.domain.article.dto.UpdateArticleRequest;
 import me.gyuri.tripity.domain.article.entity.Article;
 import me.gyuri.tripity.domain.article.repository.ArticleRepository;
+import me.gyuri.tripity.domain.user.entity.User;
+import me.gyuri.tripity.domain.user.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,8 +26,8 @@ public class ArticleService {
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
     }
 
-    public Article save(AddArticleRequest request, String email) {
-        return articleRepository.save(request.toEntity(email));
+    public Article save(AddArticleRequest request, User user) {
+        return articleRepository.save(request.toEntity(user));
     }
 
     public void delete(long id) {

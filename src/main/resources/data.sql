@@ -1,7 +1,11 @@
+-- user
+INSERT INTO users (email, nickname, password) VALUES ("kitty@abc.com", "kitty", "1234");
+INSERT INTO users (email, nickname, password) VALUES ("kitty2@abc.com", "kitty2", "1234");
+
 -- article
-INSERT INTO article (title, content, author, created_at, updated_at) VALUES ("제목1", "내용1", "user1", NOW(), NOW());
-INSERT INTO article (title, content, author, created_at, updated_at) VALUES ("제목2", "내용2", "user2", NOW(), NOW());
-INSERT INTO article (title, content, author, created_at, updated_at) VALUES ("제목3", "내용3", "user3",NOW(), NOW());
+INSERT INTO article (title, content, user_id, created_at, updated_at) VALUES ("제목1", "내용1", 1, NOW(), NOW());
+INSERT INTO article (title, content, user_id, created_at, updated_at) VALUES ("제목2", "내용2", 1, NOW(), NOW());
+INSERT INTO article (title, content, user_id, created_at, updated_at) VALUES ("제목3", "내용3", 2, NOW(), NOW());
 
 -- comment
 INSERT INTO comments (article_id, content, created_at) VALUES (1, "댓글1", NOW());

@@ -3,6 +3,8 @@ package me.gyuri.tripity.domain.article.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.gyuri.tripity.domain.article.entity.Article;
+import me.gyuri.tripity.domain.user.dto.UserInfo;
+import me.gyuri.tripity.domain.user.entity.User;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +14,7 @@ public class ArticleViewResponse {
     private Long id;
     private String title;
     private String content;
-    private String author;
+    private UserInfo userInfo;
     private LocalDateTime createdAt;
 
 
@@ -20,7 +22,7 @@ public class ArticleViewResponse {
         this.id = article.getId();
         this.title = article.getTitle();
         this.content = article.getContent();
-        this.author = article.getAuthor();
+        this.userInfo = UserInfo.from(article.getUser());
         this.createdAt = article.getCreatedAt();
     }
 }

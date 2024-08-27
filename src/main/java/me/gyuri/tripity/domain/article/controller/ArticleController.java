@@ -6,6 +6,8 @@ import me.gyuri.tripity.domain.article.dto.ArticleViewResponse;
 import me.gyuri.tripity.domain.article.dto.UpdateArticleRequest;
 import me.gyuri.tripity.domain.article.entity.Article;
 import me.gyuri.tripity.domain.article.service.ArticleService;
+import me.gyuri.tripity.domain.user.entity.User;
+import me.gyuri.tripity.domain.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import java.util.List;
 @RestController
 public class ArticleController {
     private final ArticleService articleService;
+    private final UserService userService;
 
     @GetMapping("/api/articles")
     public ResponseEntity<List<ArticleViewResponse>> findAllArticles() {
@@ -38,11 +41,14 @@ public class ArticleController {
     }
 
     @PostMapping("/api/articles")
-    public ResponseEntity<Article> addArticle(@RequestBody AddArticleRequest request, Principal principal) {
-        Article savedArticle = articleService.save(request, principal.getName());
+    public ResponseEntity<ArticleViewResponse> addArticle(@RequestBody AddArticleRequest request, Principal principal) {
+        String email = principal.getName();
+        User user = userService.findByEmail(email);
+
+        Article savedArticle = articleService.save(request, user);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(savedArticle);
+                .body(new ArticleViewResponse(savedArticle));
     }
 
 
@@ -55,10 +61,10 @@ public class ArticleController {
     }
 
     @PutMapping("/api/articles/{id}")
-    public ResponseEntity<Article> updateArticle(@PathVariable(value = "id") long id, @RequestBody UpdateArticleRequest request) {
+    public ResponseEntity<ArticleViewResponse> updateArticle(@PathVariable(value = "id") long id, @RequestBody UpdateArticleRequest request) {
         Article updatedArticle = articleService.update(id, request);
 
         return ResponseEntity.ok()
-                .body(updatedArticle);
+                .body(new ArticleViewResponse(updatedArticle));
     }
 }
