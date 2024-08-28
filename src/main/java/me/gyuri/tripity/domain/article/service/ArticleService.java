@@ -8,6 +8,9 @@ import me.gyuri.tripity.domain.article.entity.Article;
 import me.gyuri.tripity.domain.article.repository.ArticleRepository;
 import me.gyuri.tripity.domain.user.entity.User;
 import me.gyuri.tripity.domain.user.service.UserService;
+import me.gyuri.tripity.global.exception.CustomException;
+import me.gyuri.tripity.global.exception.ErrorCode;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +34,10 @@ public class ArticleService {
     }
 
     public void delete(long id) {
+        Article article = articleRepository.findById(id)
+                        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ARTICLE));
+
+        authorizeArticleAuthor(article);
         articleRepository.deleteById(id);
     }
 
@@ -39,8 +46,16 @@ public class ArticleService {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
 
+        authorizeArticleAuthor(article);
         article.update(request.getTitle(), request.getContent());
 
         return article;
+    }
+
+    private static void authorizeArticleAuthor(Article article) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!article.getUser().getEmail().equals(email)) {
+            throw new CustomException(ErrorCode.NOT_MATCH_AUTHOR);
+        }
     }
 }

@@ -20,6 +20,10 @@ public enum ErrorCode {
     NONE_CORRECT_PW(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
     NONE_CORRECT_EMAIL_AND_PW(HttpStatus.NOT_FOUND, "이메일 혹은 비밀번호를 다시 확인해 주세요."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러가 발생했습니다."),
+
+    // Article
+    NOT_MATCH_AUTHOR(HttpStatus.UNAUTHORIZED, "작성자가 아닙니다."),
+    NOT_FOUND_ARTICLE(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."),
     ;
 
     private final HttpStatus httpStatus;
