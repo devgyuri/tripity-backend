@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 public class ArticleController {
     private final ArticleService articleService;
-    private final UserService userService;
 
     @GetMapping("/api/articles")
     public ResponseEntity<List<ArticleViewResponse>> findAllArticles() {
@@ -43,9 +42,8 @@ public class ArticleController {
     @PostMapping("/api/articles")
     public ResponseEntity<ArticleViewResponse> addArticle(@RequestBody AddArticleRequest request, Principal principal) {
         String email = principal.getName();
-        User user = userService.findByEmail(email);
 
-        Article savedArticle = articleService.save(request, user);
+        Article savedArticle = articleService.addArticle(request, email);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ArticleViewResponse(savedArticle));
@@ -54,7 +52,7 @@ public class ArticleController {
 
     @DeleteMapping("/api/articles/{id}")
     public ResponseEntity<Void> deleteArticle(@PathVariable(value = "id") long id) {
-        articleService.delete(id);
+        articleService.deleteArticle(id);
 
         return ResponseEntity.ok()
                 .build();
@@ -62,7 +60,7 @@ public class ArticleController {
 
     @PutMapping("/api/articles/{id}")
     public ResponseEntity<ArticleViewResponse> updateArticle(@PathVariable(value = "id") long id, @RequestBody UpdateArticleRequest request) {
-        Article updatedArticle = articleService.update(id, request);
+        Article updatedArticle = articleService.updateArticle(id, request);
 
         return ResponseEntity.ok()
                 .body(new ArticleViewResponse(updatedArticle));

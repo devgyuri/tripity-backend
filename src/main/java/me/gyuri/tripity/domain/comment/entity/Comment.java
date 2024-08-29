@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.gyuri.tripity.domain.article.entity.Article;
+import me.gyuri.tripity.domain.user.entity.User;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -32,9 +33,14 @@ public class Comment {
     @ManyToOne
     private Article article;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Builder
-    public Comment(Article article, String author, String content) {
+    public Comment(Article article, String content, User user) {
         this.article = article;
         this.content = content;
+        this.user = user;
     }
 }

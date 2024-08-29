@@ -19,6 +19,7 @@ import java.util.List;
 @Service
 public class ArticleService {
     private final ArticleRepository articleRepository;
+    private final UserService userService;
 
     public List<Article> findAll() {
         return articleRepository.findAll();
@@ -29,11 +30,12 @@ public class ArticleService {
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
     }
 
-    public Article save(AddArticleRequest request, User user) {
+    public Article addArticle(AddArticleRequest request, String email) {
+        User user = userService.findByEmail(email);
         return articleRepository.save(request.toEntity(user));
     }
 
-    public void delete(long id) {
+    public void deleteArticle(long id) {
         Article article = articleRepository.findById(id)
                         .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ARTICLE));
 
@@ -42,7 +44,7 @@ public class ArticleService {
     }
 
     @Transactional
-    public Article update(long id, UpdateArticleRequest request) {
+    public Article updateArticle(long id, UpdateArticleRequest request) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
 

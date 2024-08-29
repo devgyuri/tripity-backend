@@ -8,8 +8,8 @@ INSERT INTO article (title, content, user_id, created_at, updated_at) VALUES ("�
 INSERT INTO article (title, content, user_id, created_at, updated_at) VALUES ("제목3", "내용3", 2, NOW(), NOW());
 
 -- comment
-INSERT INTO comments (article_id, content, created_at) VALUES (1, "댓글1", NOW());
-INSERT INTO comments (article_id, content, created_at) VALUES (1, "댓글2", NOW());
+INSERT INTO comments (article_id, content, user_id, created_at) VALUES (1, "댓글1", 1, NOW());
+INSERT INTO comments (article_id, content, user_id, created_at) VALUES (1, "댓글2", 2, NOW());
 
 
 
